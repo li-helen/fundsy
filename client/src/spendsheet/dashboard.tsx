@@ -112,8 +112,8 @@ export const Dashboard: React.FC<DashboardProps> = (props) => {
                     Click on the fields to edit
                 </Text>
             </Grid>
-            <Grid templateColumns="repeat(4, 1fr)">
-                <ColumnWrapper>
+            <Grid templateColumns="repeat(5, 1fr)">
+                <ColumnWrapper gridColumn={2}>
                     <ColumnHeader>Date</ColumnHeader>
                 </ColumnWrapper>
                 <ColumnWrapper>

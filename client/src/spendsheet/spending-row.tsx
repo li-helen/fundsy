@@ -1,6 +1,7 @@
 import * as React from 'react'
 import {
     Box,
+    Button,
     Flex,
     Icon,
     IconButton,
@@ -8,6 +9,7 @@ import {
     Select,
     Text,
 } from '@chakra-ui/core'
+import { DeleteIcon } from '@chakra-ui/icons'
 import { Formik } from 'formik'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import styled from 'styled-components'
@@ -69,20 +71,38 @@ export const SpendingRow = ({ transaction }: { transaction: any }) => {
         }
     `
 
-    const [updateTransaction] = useMutation<{ formFields: FormFields }>(
-        UPDATE_TRANSACTION,
+    const [updateTransaction] = useMutation<{
+        formFields: FormFields
+    }>(UPDATE_TRANSACTION, {
+        variables: {
+            formFields: {
+                id: state.id,
+                date: state.date,
+                category: state.category,
+                amount: state.amount,
+                description: state.description,
+            },
+        },
+    })
+
+    const DELETE_TRANSACTION = gql`
+        mutation deleteTransaction($id: String) {
+            deleteTransaction(id: $id) {
+                id
+            }
+        }
+    `
+
+    const [deleteTransaction, { data: id }] = useMutation<{ id: String }>(
+        DELETE_TRANSACTION,
         {
             variables: {
-                formFields: {
-                    id: state.id,
-                    date: state.date,
-                    category: state.category,
-                    amount: state.amount,
-                    description: state.description,
-                },
+                id: state.id,
             },
         }
     )
+
+    console.log(id)
 
     const CellWrapper = styled(Box)`
         padding-left: 20px;
@@ -90,7 +110,7 @@ export const SpendingRow = ({ transaction }: { transaction: any }) => {
 
     return !isEditing ? (
         <>
-            <CellWrapper>
+            <CellWrapper gridColumn={2}>
                 <Text onClick={() => setIsEditing(true)}>{state.date}</Text>
             </CellWrapper>
             <CellWrapper>
@@ -115,6 +135,16 @@ export const SpendingRow = ({ transaction }: { transaction: any }) => {
         >
             {({ handleChange, handleSubmit, values }) => (
                 <>
+                    <Button
+                        as={Flex}
+                        justifyContent="flex-end"
+                        alignItems="center"
+                        mr={4}
+                        variant="link"
+                        onClick={() => deleteTransaction()}
+                    >
+                        <DeleteIcon />
+                    </Button>
                     <Input
                         mb={2}
                         name="date"
