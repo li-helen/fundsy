@@ -49,6 +49,10 @@ const typeDefs = gql`
         amount: String
     }
 
+    type DeleteTransactionPayload {
+        id: String
+    }
+
     type Query {
         categories: [Category]
         transactions: [Transaction]
@@ -60,6 +64,7 @@ const typeDefs = gql`
         getAccessToken(token: String): AccessToken
         syncTransactions(token: String): [Transaction]
         updateTransaction(formFields: TransactionFormFields): Transaction
+        deleteTransaction(id: String): DeleteTransactionPayload
         addCategory(name: String): Category
     }
 `
@@ -94,6 +99,9 @@ const resolvers = {
             return await dataSources.transactionAPI.updateTransaction(
                 formFields
             )
+        },
+        deleteTransaction: async (_, { id }, { dataSources }) => {
+            return await dataSources.transactionAPI.deleteTransaction(id)
         },
         addCategory: async (_, { name }, { dataSources }) => {
             return await dataSources.categoryAPI.addCategory(name)

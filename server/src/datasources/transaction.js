@@ -79,8 +79,11 @@ class TransactionAPI extends DataSource {
         }
     }
 
-    async deleteTransaction() {
+    async deleteTransaction(id) {
         try {
+            const transaction = await Transaction.findByPk(id)
+            await transaction.destroy()
+            return { id }
         } catch (err) {
             console.log(err)
         }
